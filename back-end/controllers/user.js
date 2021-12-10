@@ -8,11 +8,16 @@ exports.signup = (req, res, next) => {
       .then(hash => {
         const user = new User({
           email: req.body.email,
-          password: hash
+          password: req.body.password
         });
-        user.save()
-          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          .catch(error => res.status(400).json({ error }));
+        if (user.validateSync('password')) {
+          res.status(400).json({ message: 'mdp non correct' })
+        } else {
+          user.password = hash;
+          user.save({ validateBeforeSave: false })
+            .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+            .catch(error => res.status(400).json({ error }));
+        }  
       })
       .catch(error => res.status(500).json({ error }));
 };
