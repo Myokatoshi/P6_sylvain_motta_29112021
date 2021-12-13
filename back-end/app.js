@@ -1,13 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const helmet = require("helmet");
+
+require('dotenv').config();
 
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://Myo:Myo@cluster.04hre.mongodb.net/ClusterHotTakes?retryWrites=true&w=majority',
+app.use(helmet());
+
+mongoose.connect(process.env.URL_MONGODB,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
